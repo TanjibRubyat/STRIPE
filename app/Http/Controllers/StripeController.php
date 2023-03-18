@@ -89,6 +89,16 @@ class StripeController extends Controller
         );
     }
 
+    public function create_product()
+    {
+        $stripe = new \Stripe\StripeClient(
+            'sk_test_51JCKihHrHTHAD5zZ7ELiP2pz6vTEL8vE120Ed8X0vPSvfzOBoARKkVAFm0VFg958FkXGSRJatofINWoHCXdzEOzW00NLLlB5ps'
+        );
+        $stripe->products->create([
+            'name' => 'Gold Special',
+        ], ['stripe_account' => 'acct_1MllojQWrIBytdL2']);
+    }
+
     public function success()
     {
         return view('success');
