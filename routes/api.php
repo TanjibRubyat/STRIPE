@@ -22,3 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('connect',[StripeController::class,'get_connects']);
 Route::post('connect',[StripeController::class,'create_customer']);
+Route::post('create-connect',[StripeController::class,'create_connect']);
+ROute::post('links',[StripeController::class,'create_links']);
