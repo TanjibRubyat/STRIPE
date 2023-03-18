@@ -14,8 +14,10 @@ use App\Http\Controllers\StripeController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-Route::get('stripe', [StripeController::class, 'stripe']);
+Route::get('/', function () {
+    return view('welcome');
+});
+// Route::get('stripe', [StripeController::class, 'stripe']);
 Route::post('stripe', [StripeController::class, 'stripePost'])->name('stripe.post');
+Route::get('success',[StripeController::class,'success']);
+Route::get('fail',[StripeController::class,'fail']);

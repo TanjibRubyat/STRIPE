@@ -17,32 +17,54 @@ class StripeController extends Controller
     {
         // dd($request->stripeToken);
         // Stripe\StripeClient(env('STRIPE_SECRET'));
-        Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        // Stripe\Charge::create([
-        //     "amount" => 100 * 100,
-        //     "currency" => "INR",
-        //     "source" => $request->stripeToken,
-        //     "description" => "This is test payment",
-        // ]);
+        $stripe = new \Stripe\StripeClient('sk_test_51JCKihHrHTHAD5zZ7ELiP2pz6vTEL8vE120Ed8X0vPSvfzOBoARKkVAFm0VFg958FkXGSRJatofINWoHCXdzEOzW00NLLlB5ps');
 
-        Stripe\Charge::create(
+        $pay = $stripe->checkout->sessions->create(
             [
-                // 'mode' => 'payment',
-                "amount" => 100 * 100,
-                "currency" => "AUD",
-                // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
-                //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
-                // 'payment_intent_data' => ['application_fee_amount' => 123],
-                "source" => $request->stripeToken,
-                "description" => "This is test payment",
-                // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56'
-                //   'success_url' => 'http://example.com/success',
-                //   'cancel_url' => 'http://localhost:8000/',
-            ],
-            ['stripe_account' => 'acct_1MlcimFyXprrBhvk']
+                'mode' => 'payment',
+                'line_items' => [['price' => 'price_1Mm8ViHrHTHAD5zZiARHNNQ9', 'quantity' => 1]],
+                'payment_intent_data' => [
+                    'application_fee_amount' => 20,
+                    'transfer_data' => ['destination' => 'acct_1MllojQWrIBytdL2'],
+                ],
+                'success_url' => 'http://localhost:8000/success',
+                'cancel_url' => 'http://localhost:8000//cancel',
+            ]
         );
-        Session::flash('success', 'Payment Successful !');
+        dd($pay->url);
+        // Session::flash('success', 'Payment Successful !');
 
-        return back();
+        // return back();
+    }
+
+    public function get_connects()
+    {
+        $stripe = new \Stripe\StripeClient('sk_test_51JCKihHrHTHAD5zZ7ELiP2pz6vTEL8vE120Ed8X0vPSvfzOBoARKkVAFm0VFg958FkXGSRJatofINWoHCXdzEOzW00NLLlB5ps');
+
+        $connect = $stripe->accounts->retrieve('acct_1MllojQWrIBytdL2', []);
+        return response()->json([
+            'data' => $connect
+        ]);
+    }
+
+    public function create_customer(Request $response)
+    {
+        $stripe = new \Stripe\StripeClient('sk_test_51JCKihHrHTHAD5zZ7ELiP2pz6vTEL8vE120Ed8X0vPSvfzOBoARKkVAFm0VFg958FkXGSRJatofINWoHCXdzEOzW00NLLlB5ps');
+
+        $stripe->customers->create(
+            ['name'=>'abc'],
+            ['email' => 'abc@example.com'],
+            ['stripe_account' => 'acct_1MllojQWrIBytdL2']
+        );
+    }
+
+    public function success()
+    {
+        return view('success');
+    }
+
+    public function fail()
+    {
+        return view('fail');
     }
 }
